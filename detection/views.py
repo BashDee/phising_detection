@@ -11,6 +11,9 @@ def predict_phishing(request):
     # Extract features from request data (adjust based on your dataset)
     features = request.data.get('features', [])
 
+    if len(features) != 2:
+        return JsonResponse({"error": "Exactly 2 features are required."}, status=400)
+
     # Predict using the KNN model
     prediction = knn_model.predict([features])[0]
 
