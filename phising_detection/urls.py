@@ -1,8 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
-from django.shortcuts import render
-
 
 # Simple homepage view
 def home(request):
@@ -11,5 +9,5 @@ def home(request):
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('detection.urls')),  # API routes
-    path('', lambda request: render(request, 'index.html')),  # Root URL (homepage)
+    path('', home),  # Root URL (homepage)
 ]
