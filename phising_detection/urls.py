@@ -5,9 +5,6 @@ from django.shortcuts import render
 
 
 # Simple homepage view
-def home(request):
-    return HttpResponse("<h1>Welcome to Phishing Detection App</h1>")
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('detection.urls')),  # API routes
