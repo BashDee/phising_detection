@@ -14,12 +14,25 @@ def extract_features(url):
 # Load the dataset
 data = pd.read_csv('phishing_dataset.csv')
 
+# Map the target column to binary values 
+data['target'] = data['target'].apply(lambda x: 1 if x == 'Other' else 0)
+
+# Check for any missing values 
+print(data.isnull().sum())
+
+# Drop any rows with missing values 
+data.dropna(inplace=True)
+
+# Example of checking data balance 
+print(data['target'].value_counts())
+
 # Extract features for each URL
 data['features'] = data['url'].apply(extract_features)
 
 # Prepare the data for training
 X = list(data['features'])
 y = data['target']  # Assuming 1 for phishing and 0 for legitimate
+print(y)
 
 # Split the data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)

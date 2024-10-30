@@ -14,7 +14,6 @@
             height: 100vh;
             margin: 0;
         }
-
         .container {
             background-color: white;
             padding: 20px;
@@ -23,7 +22,6 @@
             width: 300px;
             text-align: center;
         }
-
         input {
             width: 80%;
             padding: 10px;
@@ -31,7 +29,6 @@
             border: 1px solid #ddd;
             border-radius: 5px;
         }
-
         button {
             padding: 10px 20px;
             border: none;
@@ -40,11 +37,9 @@
             border-radius: 5px;
             cursor: pointer;
         }
-
         button:hover {
             background-color: #45a049;
         }
-
         .result {
             margin-top: 20px;
             font-weight: bold;
@@ -52,15 +47,12 @@
     </style>
 </head>
 <body>
-
     <div class="container">
         <h2>Phishing Detection</h2>
         <input type="text" id="urlInput" placeholder="Enter URL" />
         <button onclick="predictPhishing()">Predict</button>
-
         <div class="result" id="result"></div>
     </div>
-
     <script>
         // Function to get the CSRF token from the cookies
         function getCookie(name) {
@@ -77,33 +69,38 @@
             }
             return cookieValue;
         }
-
         const csrftoken = getCookie('csrftoken');  // Get CSRF token
 
         // Function to extract features from the URL
         function extractFeaturesFromUrl(url) {
             const urlLength = url.length;
             const specialChars = (url.match(/[^a-zA-Z0-9]/g) || []).length;
-            // Check if the URL uses HTTPS
             const hasHttps = url.startsWith('https') ? 1 : 0;
-
-            // Check if the URL contains suspicious phishing keywords
             const suspiciousKeywords = /login|secure|account|verify|bank|update/.test(url) ? 1 : 0;
-
             return [urlLength, specialChars, hasHttps, suspiciousKeywords];
+        }
+
+        // Function to perform a regex check for phishing patterns
+        function isPhishingUrl(url) {
+            const phishingPattern = /(?:https?:\/\/)?(?:[\w-]+\.)?[\w-]+\.\w{2,}(?:[\/\w-]*)?\/?(?:login|secure|account|verify|bank|update|signin|reset|auth)/i;
+            return phishingPattern.test(url);
         }
 
         // Function to send POST request to the API
         function predictPhishing() {
             const url = document.getElementById('urlInput').value;
-
             if (!url) {
                 alert('Please enter a URL.');
                 return;
             }
 
-            const features = extractFeaturesFromUrl(url);
+            // Perform regex check for obvious phishing patterns
+            if (isPhishingUrl(url)) {
+                document.getElementById('result').textContent = 'Result: Likely Phishing';
+                return;
+            }
 
+            const features = extractFeaturesFromUrl(url);
             fetch('http://127.0.0.1:8000/api/predict/', {
                 method: 'POST',
                 headers: {
@@ -123,6 +120,5 @@
             });
         }
     </script>
-
 </body>
 </html>
